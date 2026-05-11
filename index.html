@@ -41,7 +41,8 @@
 <div class="container">
   <div id="survey-view">
     <div class="header">
-      <h1>Post-session check-in</h1>
+      <h1>Ponder.app</h1>
+      <p style="font-size:13px;color:#b4b2a9;font-family:-apple-system,sans-serif;margin:0 0 0.5rem;letter-spacing:0.3px;">POST-SESSION CHECK-IN</p>
       <p>Six quick questions to close out your journaling session.</p>
     </div>
 
@@ -141,9 +142,26 @@
       </div>
     </div>
 
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 7</span>
+      <p class="question-label">What were your favourite sub-prompt(s)? Please type them out below.</p>
+      <textarea id="fav_prompts" rows="4" placeholder="Type your favourite prompts here..." style="width:100%;padding:11px 14px;border:0.5px solid #d3d1c7;border-radius:8px;font-family:-apple-system,sans-serif;font-size:14px;color:#444441;background:#fff;resize:vertical;"></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Anything else?</span>
+      <p class="question-label">Feel free to share any additional thoughts or feedback below.</p>
+      <textarea id="feedback" rows="4" placeholder="Your thoughts..." style="width:100%;padding:11px 14px;border:0.5px solid #d3d1c7;border-radius:8px;font-family:-apple-system,sans-serif;font-size:14px;color:#444441;background:#fff;resize:vertical;"></textarea>
+    </div>
+
     <div class="submit-wrap">
       <button class="submit-btn" onclick="submitSurvey()">Submit check-in</button>
       <p class="error-msg" id="error-msg">Please answer all six questions before submitting.</p>
+      <p style="font-size:12px;color:#b4b2a9;font-family:-apple-system,sans-serif;margin-top:1rem;line-height:1.6;text-align:center;">Your data is protected and won't be shared outside the Ponder.app team. Thank you for your trust. You will receive an email when your submission has been received.</p>
     </div>
   </div>
 
@@ -154,7 +172,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYMP1IlvAUt57dIeq6kt0yp2yvEUalsCwciYHIipOQ5rkVn5s3ys2gVR-KX-vQH5_A4w/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8NCJZn2sXpSlcQSHI2NT6ZBYhR8Gv9DPK7bJOZqDLwGJpwiFK7pC_3VldgXS7-0UyfA/exec';
 
   document.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
@@ -211,7 +229,9 @@
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
-    const params = new URLSearchParams({ name, email, ...answers, timestamp: new Date().toISOString() });
+    const fav_prompts = document.getElementById('fav_prompts').value.trim();
+    const feedback = document.getElementById('feedback').value.trim();
+    const params = new URLSearchParams({ name, email, ...answers, fav_prompts, feedback, timestamp: new Date().toISOString() });
     fetch(`${SCRIPT_URL}?${params}`, { mode: 'no-cors' })
       .then(() => showThankyou())
       .catch(() => showThankyou());
