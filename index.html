@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post-Journaling Check-in</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #faf9f7; color: #2c2c2a; min-height: 100vh; padding: 3rem 1.5rem; }
+  .container { max-width: 560px; margin: 0 auto; }
+  .header { margin-bottom: 3rem; }
+  .header h1 { font-size: 22px; font-weight: 400; color: #2c2c2a; margin-bottom: 0.5rem; letter-spacing: -0.2px; }
+  .header p { font-size: 15px; color: #888780; font-family: -apple-system, sans-serif; line-height: 1.6; }
+  .question { margin-bottom: 2.5rem; }
+  .question-label { font-size: 16px; font-weight: 400; color: #2c2c2a; margin-bottom: 1rem; line-height: 1.5; }
+  .question-num { font-size: 12px; color: #b4b2a9; font-family: -apple-system, sans-serif; display: block; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border: 0.5px solid #d3d1c7; border-radius: 8px; cursor: pointer; background: #fff; transition: border-color 0.15s, background 0.15s; font-family: -apple-system, sans-serif; font-size: 14px; color: #444441; }
+  .option:hover { border-color: #888780; background: #faf9f7; }
+  .option.selected { border-color: #2c2c2a; background: #f1efe8; color: #2c2c2a; }
+  .option   input[type="radio"], input[type="checkbox"] { display: none; }
+  .radio-dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #d3d1c7; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+  .option.selected .radio-dot { border-color: #2c2c2a; }
+  .radio-dot-inner { width: 8px; height: 8px; border-radius: 50%; background: #2c2c2a; opacity: 0; transition: opacity 0.15s; }
+  .option.selected .radio-dot-inner { opacity: 1; }
+  .divider { border: none; border-top: 0.5px solid #e8e6e0; margin: 0.5rem 0 2.5rem; }
+  .submit-wrap { margin-top: 1rem; }
+  .submit-btn { width: 100%; padding: 14px; background: #2c2c2a; color: #faf9f7; border: none; border-radius: 8px; font-size: 15px; font-family: -apple-system, sans-serif; cursor: pointer; transition: opacity 0.15s; }
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .error-msg { font-size: 13px; color: #a32d2d; font-family: -apple-system, sans-serif; margin-top: 1rem; display: none; }
+  .thankyou { display: none; text-align: center; padding: 4rem 1rem; }
+  .thankyou h2 { font-size: 22px; font-weight: 400; margin-bottom: 0.75rem; }
+  .thankyou p { font-size: 15px; color: #888780; font-family: -apple-system, sans-serif; line-height: 1.6; }
+  .progress { display: flex; gap: 4px; margin-bottom: 3rem; }
+  .progress-dot { height: 2px; flex: 1; background: #d3d1c7; border-radius: 2px; transition: background 0.3s; }
+  .progress-dot.filled { background: #2c2c2a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="survey-view">
+    <div class="header">
+      <h1>Post-session check-in</h1>
+      <p>Six quick questions to close out your journaling session.</p>
+    </div>
+
+    <div class="progress" id="progress">
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+
+    <div class="question">
+      <span class="question-num">Question 1</span>
+      <p class="question-label">How do you feel right now?</p>
+      <div class="options" data-q="q1">
+        <label class="option"><input type="radio" name="q1" value="Much better"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Much better</label>
+        <label class="option"><input type="radio" name="q1" value="Slightly better"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Slightly better</label>
+        <label class="option"><input type="radio" name="q1" value="The same as before"><span class="radio-dot"><span class="radio-dot-inner"></span></span>The same as before</label>
+        <label class="option"><input type="radio" name="q1" value="Slightly worse"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Slightly worse</label>
+        <label class="option"><input type="radio" name="q1" value="Much worse"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Much worse</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 2</span>
+      <p class="question-label">How clear does your thinking feel right now?</p>
+      <div class="options" data-q="q2">
+        <label class="option"><input type="radio" name="q2" value="Much clearer"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Much clearer</label>
+        <label class="option"><input type="radio" name="q2" value="Somewhat clearer"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Somewhat clearer</label>
+        <label class="option"><input type="radio" name="q2" value="About the same"><span class="radio-dot"><span class="radio-dot-inner"></span></span>About the same</label>
+        <label class="option"><input type="radio" name="q2" value="More confused"><span class="radio-dot"><span class="radio-dot-inner"></span></span>More confused</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 3</span>
+      <p class="question-label">What best describes this journaling session?</p>
+      <div class="options" data-q="q3">
+        <label class="option"><input type="checkbox" name="q3" value="Processing emotions"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Processing emotions</label>
+        <label class="option"><input type="checkbox" name="q3" value="Venting"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Venting</label>
+        <label class="option"><input type="checkbox" name="q3" value="Clarifying a decision"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Clarifying a decision</label>
+        <label class="option"><input type="checkbox" name="q3" value="Planning & organising"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Planning & organising</label>
+        <label class="option"><input type="checkbox" name="q3" value="Self-discovery"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Self-discovery</label>
+        <label class="option"><input type="checkbox" name="q3" value="Exploring a pattern"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Exploring a pattern</label>
+        <label class="option"><input type="checkbox" name="q3" value="Other"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Other</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 4</span>
+      <p class="question-label">How honest do you feel you were during this session?</p>
+      <div class="options" data-q="q4">
+        <label class="option"><input type="radio" name="q4" value="Very honest"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Very honest</label>
+        <label class="option"><input type="radio" name="q4" value="Mostly honest"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Mostly honest</label>
+        <label class="option"><input type="radio" name="q4" value="Somewhat guarded"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Somewhat guarded</label>
+        <label class="option"><input type="radio" name="q4" value="I held back a lot"><span class="radio-dot"><span class="radio-dot-inner"></span></span>I held back a lot</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 5</span>
+      <p class="question-label">Did you gain any new insight?</p>
+      <div class="options" data-q="q5">
+        <label class="option"><input type="radio" name="q5" value="Yes, something important"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Yes, something important</label>
+        <label class="option"><input type="radio" name="q5" value="Yes, something small but meaningful"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Yes, something small but meaningful</label>
+        <label class="option"><input type="radio" name="q5" value="Not sure, more reflection needed"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Not sure, more reflection needed</label>
+        <label class="option"><input type="radio" name="q5" value="No new insight"><span class="radio-dot"><span class="radio-dot-inner"></span></span>No new insight</label>
+        <label class="option"><input type="radio" name="q5" value="I wasn't looking for one"><span class="radio-dot"><span class="radio-dot-inner"></span></span>I wasn't looking for one</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="question">
+      <span class="question-num">Question 6</span>
+      <p class="question-label">Does the next step feel more clear?</p>
+      <div class="options" data-q="q6">
+        <label class="option"><input type="radio" name="q6" value="Yes, definitely"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Yes, definitely</label>
+        <label class="option"><input type="radio" name="q6" value="Somewhat"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Somewhat</label>
+        <label class="option"><input type="radio" name="q6" value="Not yet"><span class="radio-dot"><span class="radio-dot-inner"></span></span>Not yet</label>
+        <label class="option"><input type="radio" name="q6" value="I wasn't looking for one"><span class="radio-dot"><span class="radio-dot-inner"></span></span>I wasn't looking for one</label>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" onclick="submitSurvey()">Submit check-in</button>
+      <p class="error-msg" id="error-msg">Please answer all six questions before submitting.</p>
+    </div>
+  </div>
+
+  <div class="thankyou" id="thankyou-view">
+    <h2>Thank you.</h2>
+    <p>Your responses have been recorded.<br>Take a moment before you move on.</p>
+  </div>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNAeNux5SsqG-THKSp8sijUtaF7Pw53890OITNjCpliAhIo_fCxkjCEqqCVLLRrXwPyg/exec';
+
+  document.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const input = opt.querySelector('input');
+      if (input.type === 'radio') {
+        document.querySelectorAll(`input[name="${input.name}"]`).forEach(i => {
+          i.closest('.option').classList.remove('selected');
+        });
+        opt.classList.add('selected');
+        input.checked = true;
+      } else {
+        input.checked = !input.checked;
+        opt.classList.toggle('selected', input.checked);
+      }
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const qs = ['q1','q2','q3','q4','q5','q6'];
+    const dots = document.querySelectorAll('.progress-dot');
+    qs.forEach((q, i) => {
+      dots[i].classList.toggle('filled', !!document.querySelector(`input[name="${q}"]:checked`));
+    });
+  }
+
+  function submitSurvey() {
+    const qs = ['q1','q2','q3','q4','q5','q6'];
+    const answers = {};
+    let allAnswered = true;
+    qs.forEach(q => {
+      if (q === 'q3') {
+        const checked = [...document.querySelectorAll(`input[name="q3"]:checked`)].map(i => i.value);
+        if (!checked.length) { allAnswered = false; } else { answers[q] = checked.join(', '); }
+      } else {
+        const checked = document.querySelector(`input[name="${q}"]:checked`);
+        if (!checked) { allAnswered = false; } else { answers[q] = checked.value; }
+      }
+    });
+    if (!allAnswered) {
+      document.getElementById('error-msg').style.display = 'block';
+      return;
+    }
+    document.getElementById('error-msg').style.display = 'none';
+
+    const btn = document.querySelector('.submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    const params = new URLSearchParams({ ...answers, timestamp: new Date().toISOString() });
+    fetch(`${SCRIPT_URL}?${params}`)
+      .then(() => showThankyou())
+      .catch(() => showThankyou());
+  }
+
+  function showThankyou() {
+    document.getElementById('survey-view').style.display = 'none';
+    document.getElementById('thankyou-view').style.display = 'block';
+  }
+</script>
+</body>
+</html>
