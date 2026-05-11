@@ -156,7 +156,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNAeNux5SsqG-THKSp8sijUtaF7Pw53890OITNjCpliAhIo_fCxkjCEqqCVLLRrXwPyg/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyIcqzcvTeDryao0eREjPju7joBFz3OShmAUJfT6cWEL0r4xogvOjiwroy8MZ4zWaIbA/exec';
 
   document.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
@@ -214,7 +214,7 @@
     btn.textContent = 'Submitting...';
 
     const params = new URLSearchParams({ name, email, ...answers, timestamp: new Date().toISOString() });
-    fetch(`${SCRIPT_URL}?${params}`)
+    fetch(`${SCRIPT_URL}?${params}`, { mode: 'no-cors' })
       .then(() => showThankyou())
       .catch(() => showThankyou());
   }
