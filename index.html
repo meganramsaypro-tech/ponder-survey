@@ -45,6 +45,14 @@
       <p>Six quick questions to close out your journaling session.</p>
     </div>
 
+    <div class="question">
+      <span class="question-num">Your details</span>
+      <input type="text" id="name" placeholder="Your name" style="width:100%;padding:11px 14px;border:0.5px solid #d3d1c7;border-radius:8px;font-family:-apple-system,sans-serif;font-size:14px;color:#444441;background:#fff;margin-bottom:8px;display:block;">
+      <input type="email" id="email" placeholder="Your email address" style="width:100%;padding:11px 14px;border:0.5px solid #d3d1c7;border-radius:8px;font-family:-apple-system,sans-serif;font-size:14px;color:#444441;background:#fff;display:block;">
+    </div>
+
+    <hr class="divider">
+
     <div class="progress" id="progress">
       <div class="progress-dot"></div>
       <div class="progress-dot"></div>
@@ -188,6 +196,13 @@
         if (!checked) { allAnswered = false; } else { answers[q] = checked.value; }
       }
     });
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if (!name || !email) {
+      document.getElementById('error-msg').textContent = 'Please enter your name and email before submitting.';
+      document.getElementById('error-msg').style.display = 'block';
+      return;
+    }
     if (!allAnswered) {
       document.getElementById('error-msg').style.display = 'block';
       return;
@@ -198,7 +213,7 @@
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
-    const params = new URLSearchParams({ ...answers, timestamp: new Date().toISOString() });
+    const params = new URLSearchParams({ name, email, ...answers, timestamp: new Date().toISOString() });
     fetch(`${SCRIPT_URL}?${params}`)
       .then(() => showThankyou())
       .catch(() => showThankyou());
